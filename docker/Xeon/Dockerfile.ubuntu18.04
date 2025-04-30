@@ -25,7 +25,6 @@ RUN rm /etc/apt/sources.list.d/oneAPI.list && \
     apt-get install --no-install-recommends -y \
       git tar ca-certificates \
       libx265-dev \
-      libx264-dev \
       zlib1g-dev \
       nasm \
       gcc-9 \
@@ -39,6 +38,16 @@ RUN rm /etc/apt/sources.list.d/oneAPI.list && \
     curl -Lf https://github.com/ffmpeg/ffmpeg/archive/${FFMPEG_COMMIT_ID}.tar.gz | \
       tar -zx --strip-components=1 -C "${DL_PREFIX}/ffmpeg"
 
+
+# build and install x264 from source
+WORKDIR ${DL_PREFIX}
+RUN git clone https://github.com/mirror/x264 -b stable --depth 1
+
+WORKDIR ${DL_PREFIX}/x264
+RUN ./configure --enable-shared && \
+    make -j "$(nproc)" && \
+    make install && \
+    ldconfig
 
 COPY . ${DL_PREFIX}/Video-Super-Resolution-Library
 
