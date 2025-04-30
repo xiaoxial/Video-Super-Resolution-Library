@@ -52,8 +52,8 @@ if [ ! -d "ffmpeg" ];then
 fi
 
 pushd ffmpeg
-git checkout -b n6.0 n6.0
-git am ../Video-Super-Resolution-Library/ffmpeg/0001-ffmpeg-raisr-filter.patch
+git checkout -b n7.1 n7.1
+git am ../Video-Super-Resolution-Library/ffmpeg/0001-Upgrade-Raisr-ffmpeg-plugin-to-n7.1-from-n6.1.1.patch
 popd
 
 # pull nasm used for build x264

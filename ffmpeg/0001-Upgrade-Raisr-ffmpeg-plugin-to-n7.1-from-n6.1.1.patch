@@ -1,20 +1,20 @@
-From 467d3dded4549645b16710807562e84a075739c5 Mon Sep 17 00:00:00 2001
+From d2cd96acaaa6211ea8d8aa5025fb9e655f78b212 Mon Sep 17 00:00:00 2001
 From: Xiaoxia Liang <xiaoxia.liang@intel.com>
-Date: Mon, 24 Jul 2023 11:49:13 +0800
-Subject: [PATCH 1/2] FFmpeg Raisr filter for n6.0.
+Date: Thu, 3 Apr 2025 17:40:44 +0000
+Subject: [PATCH] Upgrade Raisr ffmpeg plugin to n7.1 from n6.1.1
 
 Signed-off-by: Xiaoxia Liang <xiaoxia.liang@intel.com>
 ---
- configure                | 12 ++++++++++++
- libavfilter/Makefile     |  1 +
- libavfilter/allfilters.c |  1 +
- 3 files changed, 14 insertions(+)
+ configure                | 13 +++++++++++++
+ libavfilter/Makefile     |  2 ++
+ libavfilter/allfilters.c |  2 ++
+ 3 files changed, 17 insertions(+)
 
 diff --git a/configure b/configure
-index b6616f00b6..f87716611b 100755
+index d77a55b653..2f90d21aa0 100755
 --- a/configure
 +++ b/configure
-@@ -240,6 +240,7 @@ External library support:
+@@ -241,6 +241,7 @@ External library support:
    --enable-libgsm          enable GSM de/encoding via libgsm [no]
    --enable-libiec61883     enable iec61883 via libiec61883 [no]
    --enable-libilbc         enable iLBC de/encoding via libilbc [no]
@@ -22,7 +22,7 @@ index b6616f00b6..f87716611b 100755
    --enable-libjack         enable JACK audio sound server [no]
    --enable-libjxl          enable JPEG XL de/encoding via libjxl [no]
    --enable-libklvanc       enable Kernel Labs VANC processing [no]
-@@ -1823,6 +1824,7 @@ EXTERNAL_LIBRARY_LIST="
+@@ -1926,6 +1927,7 @@ EXTERNAL_LIBRARY_LIST="
      libgsm
      libiec61883
      libilbc
@@ -30,7 +30,15 @@ index b6616f00b6..f87716611b 100755
      libjack
      libjxl
      libklvanc
-@@ -6667,6 +6669,16 @@ enabled libopus           && {
+@@ -3962,6 +3964,7 @@ transpose_opencl_filter_deps="opencl"
+ transpose_vaapi_filter_deps="vaapi VAProcPipelineCaps_rotation_flags"
+ transpose_vt_filter_deps="videotoolbox VTPixelRotationSessionCreate"
+ transpose_vulkan_filter_deps="vulkan spirv_compiler"
++raisr_opencl_filter_deps="opencl"
+ unsharp_opencl_filter_deps="opencl"
+ uspp_filter_deps="gpl avcodec"
+ vaguedenoiser_filter_deps="gpl"
+@@ -6978,6 +6981,16 @@ enabled libopus           && {
      }
  }
  enabled libplacebo        && require_pkg_config libplacebo "libplacebo >= 4.192.0" libplacebo/vulkan.h pl_vulkan_create
@@ -45,31 +53,41 @@ index b6616f00b6..f87716611b 100755
 +   die "ERROR: Intel IPP not found"
 +fi
  enabled libpulse          && require_pkg_config libpulse libpulse pulse/pulseaudio.h pa_context_new
- enabled librabbitmq       && require_pkg_config librabbitmq "librabbitmq >= 0.7.1" amqp.h amqp_new_connection
- enabled librav1e          && require_pkg_config librav1e "rav1e >= 0.5.0" rav1e.h rav1e_context_new
+ enabled libqrencode       && require_pkg_config libqrencode libqrencode qrencode.h QRcode_encodeString
+ enabled libquirc          && require libquirc quirc.h quirc_decode -lquirc
 diff --git a/libavfilter/Makefile b/libavfilter/Makefile
-index b3d3d981dd..13126f7f48 100644
+index 91487afb21..dbf1114d78 100644
 --- a/libavfilter/Makefile
 +++ b/libavfilter/Makefile
-@@ -425,6 +425,7 @@ OBJS-$(CONFIG_PSEUDOCOLOR_FILTER)            += vf_pseudocolor.o
- OBJS-$(CONFIG_PSNR_FILTER)                   += vf_psnr.o framesync.o
+@@ -440,6 +440,7 @@ OBJS-$(CONFIG_PSNR_FILTER)                   += vf_psnr.o framesync.o
  OBJS-$(CONFIG_PULLUP_FILTER)                 += vf_pullup.o
  OBJS-$(CONFIG_QP_FILTER)                     += vf_qp.o
+ OBJS-$(CONFIG_QUIRC_FILTER)                  += vf_quirc.o
 +OBJS-$(CONFIG_RAISR_FILTER)                  += vf_raisr.o
  OBJS-$(CONFIG_RANDOM_FILTER)                 += vf_random.o
  OBJS-$(CONFIG_READEIA608_FILTER)             += vf_readeia608.o
  OBJS-$(CONFIG_READVITC_FILTER)               += vf_readvitc.o
+@@ -563,6 +564,7 @@ OBJS-$(CONFIG_XBR_FILTER)                    += vf_xbr.o
+ OBJS-$(CONFIG_XCORRELATE_FILTER)             += vf_convolve.o framesync.o
+ OBJS-$(CONFIG_XFADE_FILTER)                  += vf_xfade.o
+ OBJS-$(CONFIG_XFADE_OPENCL_FILTER)           += vf_xfade_opencl.o opencl.o opencl/xfade.o
++OBJS-$(CONFIG_RAISR_OPENCL_FILTER)           += vf_raisr_opencl.o opencl.o
+ OBJS-$(CONFIG_XFADE_VULKAN_FILTER)           += vf_xfade_vulkan.o vulkan.o vulkan_filter.o
+ OBJS-$(CONFIG_XMEDIAN_FILTER)                += vf_xmedian.o framesync.o
+ OBJS-$(CONFIG_XPSNR_FILTER)                  += vf_xpsnr.o framesync.o
 diff --git a/libavfilter/allfilters.c b/libavfilter/allfilters.c
-index d7db46c2af..0dc81faaed 100644
+index 9819f0f95b..92a384ca68 100644
 --- a/libavfilter/allfilters.c
 +++ b/libavfilter/allfilters.c
-@@ -401,6 +401,7 @@ extern const AVFilter ff_vf_pseudocolor;
- extern const AVFilter ff_vf_psnr;
- extern const AVFilter ff_vf_pullup;
+@@ -415,6 +415,8 @@ extern const AVFilter ff_vf_pullup;
  extern const AVFilter ff_vf_qp;
+ extern const AVFilter ff_vf_qrencode;
+ extern const AVFilter ff_vf_quirc;
 +extern const AVFilter ff_vf_raisr;
++extern const AVFilter ff_vf_raisr_opencl;
  extern const AVFilter ff_vf_random;
  extern const AVFilter ff_vf_readeia608;
  extern const AVFilter ff_vf_readvitc;
 -- 
 2.34.1
+

@@ -14,7 +14,7 @@ ARG DL_PREFIX=/opt
 ARG LD_LIBRARY_PATH="/opt/build/lib:/opt/build/lib64:${LD_LIBRARY_PATH}"
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Europe/Warsaw"
-ARG FFMPEG_COMMIT_ID="n6.1.1"
+ARG FFMPEG_COMMIT_ID="n7.1"
 
 WORKDIR ${DL_PREFIX}/ffmpeg
 SHELL ["/bin/bash", "-ex", "-o", "pipefail", "-c"]

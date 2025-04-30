@@ -113,8 +113,8 @@ To build the library with OpenCL support, run \
 `git clone https://github.com/FFmpeg/FFmpeg ffmpeg` \
 `cd ffmpeg`
 
-#### Checkout FFmpeg version 6.0 tag
-`git checkout -b n6.0 n6.0`
+#### Checkout FFmpeg version n7.1 tag
+`git checkout -b n7.1 n7.1`
 
 #### Copy vf_raisr.c to ffmpeg libavfilter folder
 `cp ../Video-Super-Resolution-Library/ffmpeg/vf_raisr.c libavfilter/` \
@@ -122,9 +122,7 @@ To use raisr_opencl you need to copy vf_raisr_opencl.c as well \
 `cp ../Video-Super-Resolution-Library/ffmpeg/vf_raisr_opencl.c libavfilter/`
 
 #### Apply patch
-`git am ../Video-Super-Resolution-Library/ffmpeg/0001-ffmpeg-raisr-filter.patch` \
-To use raisr_opencl you need to apply patch 0002 as well \
-`git am ../Video-Super-Resolution-Library/ffmpeg/0002-libavfilter-raisr_opencl-Add-raisr_opencl-filter.patch`
+`git am ../Video-Super-Resolution-Library/ffmpeg/0001-Upgrade-Raisr-ffmpeg-plugin-to-n7.1-from-n6.1.1.patch`
 
 #### Configure FFmpeg
 When `DCMAKE_INSTALL_PREFIX` isn't used, the ffmpeg configure command is as: \

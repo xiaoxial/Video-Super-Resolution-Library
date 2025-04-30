@@ -10,7 +10,7 @@ FROM quay.io/centos/centos:stream9 AS build
 ARG DL_PREFIX=/opt
 ARG PREFIX=/opt/build
 ARG LD_LIBRARY_PATH="/opt/build/lib:/opt/build/lib64:/usr/local/lib:/usr/local/lib64"
-ARG FFMPEG_COMMIT_ID="n6.1.1"
+ARG FFMPEG_COMMIT_ID="n7.1"
 ENV TZ="Europe/Warsaw"
 
 ARG ONEAPI_LINK="https://registrationcenter-download.intel.com/akdlm/IRC_NAS/046b1402-c5b8-4753-9500-33ffb665123f/l_ipp_oneapi_p_2021.10.1.16_offline.sh"

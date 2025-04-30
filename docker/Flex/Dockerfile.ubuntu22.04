@@ -16,7 +16,7 @@ ARG GMMLIB_VER=22.4.1
 ARG LIBVA2_VER=2.22.0
 ARG LIBVA_UTILS_VER=2.22.0
 ARG MEDIA_DRIVER_VER=24.2.5
-ARG FFMPEG_VER="n6.1.1"
+ARG FFMPEG_VER="n7.1"
 
 ARG SVT_AV1_REPO=https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/${SVT_AV1_VER}/SVT-AV1-${SVT_AV1_VER}.tar.gz
 ARG SVT_VP9_REPO=https://github.com/OpenVisualCloud/SVT-VP9/archive/refs/tags/${SVT_VP9_VER}.tar.gz

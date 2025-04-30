@@ -22,7 +22,6 @@
 #include "raisr/RaisrDefaults.h"
 #include "libavutil/opt.h"
 #include "avfilter.h"
-#include "internal.h"
 #include "opencl.h"
 #include "libavutil/pixdesc.h"
 #include "video.h"
@@ -157,8 +156,9 @@ static int raisr_filter_config_input(AVFilterLink *inlink)
 {
     AVHWFramesContext *input_frames;
     int err;
+    FilterLink        *inl = ff_filter_link(inlink);
 
-    input_frames = (AVHWFramesContext*)inlink->hw_frames_ctx->data;
+    input_frames = (AVHWFramesContext*)inl->hw_frames_ctx->data;
     if (input_frames->format != AV_PIX_FMT_OPENCL)
         return AVERROR(EINVAL);
 
@@ -178,6 +178,7 @@ static int raisr_opencl_config_output(AVFilterLink *outlink)
 {
     AVFilterContext *avctx = outlink->src;
     AVFilterLink *inlink = avctx->inputs[0];
+    FilterLink   *inl = ff_filter_link(inlink);
     RaisrOpenCLContext *ctx = avctx->priv;
     AVHWFramesContext *input_frames;
     const AVPixFmtDescriptor *desc;
@@ -187,7 +188,7 @@ static int raisr_opencl_config_output(AVFilterLink *outlink)
     if (err < 0)
         return err;
 
-    input_frames = (AVHWFramesContext*)inlink->hw_frames_ctx->data;
+    input_frames = (AVHWFramesContext*)inl->hw_frames_ctx->data;
     ctx->sw_format = (enum AVPixelFormat)input_frames->sw_format;
     desc = av_pix_fmt_desc_get(ctx->sw_format);
     if (desc && desc->comp[0].depth != ctx->bits) {

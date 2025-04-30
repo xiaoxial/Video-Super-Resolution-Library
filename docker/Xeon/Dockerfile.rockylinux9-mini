@@ -12,7 +12,7 @@ FROM ${IMAGE_CACHE_REGISTRY}/${IMAGE_NAME} AS build
 ARG DL_PREFIX=/opt
 ARG PREFIX=/opt/build
 ARG LD_LIBRARY_PATH="/opt/build/lib:/opt/build/lib64:/usr/local/lib:/usr/local/lib64"
-ARG FFMPEG_COMMIT_ID="n6.1.1"
+ARG FFMPEG_COMMIT_ID="n7.1"
 ENV TZ="Europe/Warsaw"
 
 ARG NASM_RPM_LINK="https://rpmfind.net/linux/centos-stream/9-stream/CRB/x86_64/os/Packages/nasm-2.15.03-7.el9.x86_64.rpm"
